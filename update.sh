@@ -1,17 +1,20 @@
 #!/bin/sh
 set -e
-set -x
+#set -x
 # Script to keep mirror updated and generate deb822-style indexe
 # All in the name of 'fnt'
+#
+# I should be placed/run where in the parent folder of the mirror (fonts-main).
 #
 # shellcheck disable=SC1007
 DIR=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd); cd "${DIR:?}"
 #SCRIPT=$(basename "$0"); # echo "$DIR/$SCRIPT"
+# Source if not already a git directory
 SOURCE='https://github.com/google/fonts/archive/refs/heads/main.tar.gz'
 # Fucking download doesn't support timestamps..
 # Shouldn't that be a git repo instead of downloading it every day?!
 # mv fonts-main{.old};
-# git clone https://github.com/google/fonts --single-branch
+# git clone https://github.com/google/fonts --single-branch fonts-main
 #
 if ! git -C "$DIR"/fonts-main pull --force --quiet; then
   # Doesn't seem to be a git dir..
