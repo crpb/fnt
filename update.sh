@@ -1,10 +1,10 @@
 #!/bin/sh
 set -e
 #set -x
-# Script to keep mirror updated and generate deb822-style indexe
+# Script to keep mirror updated and generate deb822-style indexes
 # All in the name of 'fnt'
 #
-# I should be placed/run where in the parent folder of the mirror (fonts-main).
+# I should be placed/run in the parent folder of the mirror (fonts-main).
 #
 # shellcheck disable=SC1007
 DIR=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd); cd "${DIR:?}"
