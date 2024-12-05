@@ -1,0 +1,52 @@
+name: Makefile CI
+
+on:
+  schedule:
+    - cron: "30 23 * * *"
+#  push:
+#    branches: [ "main" ]
+#  pull_request:
+#    branches: [ "main" ]
+
+jobs:
+  build:
+
+    runs-on: debian-latest
+
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        repository: 'google/fonts'
+        path: 'fonts-main'
+    - name: generate index
+      run: |
+         # Generate indexes
+         for FOLDER in ofl apache; do
+           # shellcheck disable=SC2018,SC2019
+           INDEX="$(echo "$FOLDER" |tr 'a-z' 'A-Z')"
+           for FONTPATH in fonts-main/"$FOLDER"/*; do
+             {
+               printf 'Package: %s\nDirectory: %s\nFiles:\n' "$(basename "$FONTPATH")" "$FONTPATH"
+               for FONTFILE in "$FONTPATH"/*.?tf; do
+                 printf ' %s\n' "$(md5sum "$FONTFILE" |sed -n 's/^\(.*\) .*\/\(.*tf$\)/\1 \2/p')"
+               done
+               printf '\n'
+             } >> "$INDEX"
+           done
+           xz -f "$INDEX"
+         done
+
+
+
+#    - name: update-index
+#      run: ./update.sh
+      
+
+#    - name: Install dependencies
+#      run: make
+
+#    - name: Run check
+#      run: make check
+
+#    - name: Run distcheck
+#      run: make distcheck
