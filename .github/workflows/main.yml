@@ -21,7 +21,6 @@ jobs:
         ref: 'mirror'
     - name: generate index
       run: |
-         git clone --depth 1 --single-branch https://github.com/google/fonts
          ./update.sh
          git config --global user.email "runner@moo.tld"
          git config --global user.name "Moo Run"
