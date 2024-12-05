@@ -19,6 +19,10 @@ jobs:
       with:
         repository: 'google/fonts'
         path: 'fonts-main'
+    - uses: actions/checkout@v4
+      with:
+        repository: 'crpb/fnt'
+        ref: 'mirror'
     - name: generate index
       run: |
          # Generate indexes
@@ -36,7 +40,9 @@ jobs:
            done
            xz -f "$INDEX"
          done
-
+         git add OFL.xz APACHE.xz
+         git commit -m $(date -Im)
+         git push
 
 
 #    - name: update-index
