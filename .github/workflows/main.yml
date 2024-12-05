@@ -2,6 +2,7 @@ name: Makefile CI
 
 on:
   push:
+  check_run:
   schedule:
     - cron: "30 23 * * *"
 #  push:
