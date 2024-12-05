@@ -1,0 +1,24 @@
+name: Update deb822 style cache files
+
+on:
+  push:
+  check_run:
+  schedule:
+    - cron: "30 23 * * *"
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        repository: 'crpb/fnt'
+        ref: 'mirror'
+    - name: generate index
+      run: |
+         ./update.sh
+         git config --global user.email "fnt@example.com"
+         git config --global user.name "fnt index"
+         #git add OFL.xz APACHE.xz
+         if git commit --all -m $(date -Im); then
+           git push
+         fi
