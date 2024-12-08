@@ -13,6 +13,13 @@ jobs:
       with:
         repository: 'crpb/fnt'
         ref: 'mirror'
+    - name: Restore cached Primes
+      id: cache-primes-restore
+      uses: actions/cache/restore@v4
+      with:
+        key: ${{ runner.os }}-primes
+        path: |
+          fonts-main
     - name: generate index
       run: |
          ./update.sh
@@ -22,3 +29,11 @@ jobs:
          if git commit --all -m $(date -Im); then
            git push
          fi
+    - name: Always Save Primes
+      id: cache-primes-save
+      if: always() && steps.cache-primes-restore.outputs.cache-hit != 'true'
+      uses: actions/cache/save@v4
+      with:
+        key: ${{ steps.cache-primes-restore.outputs.cache-primary-key }}
+        path: |
+          fonts-main
