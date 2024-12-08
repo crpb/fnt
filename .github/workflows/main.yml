@@ -25,8 +25,8 @@ jobs:
          ./update.sh
          git config --global user.email "fnt@example.com"
          git config --global user.name "fnt index"
-         #git add OFL.xz APACHE.xz
-         if git commit --all -m $(date -Im); then
+         git add OFL.xz APACHE.xz || :
+         if git commit -m $(date -Im); then
            git push
          fi
     - name: Always Save Primes
