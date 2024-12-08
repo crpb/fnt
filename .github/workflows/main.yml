@@ -25,6 +25,7 @@ jobs:
          ./update.sh
          git config --global user.email "runner@moo.tld"
          git config --global user.name "Moo Run"
-         git add OFL.xz APACHE.xz
-         git commit -m $(date -Im)
-         git push
+         #git add OFL.xz APACHE.xz
+         if git commit --all -m $(date -Im); then
+           git push
+         fi
