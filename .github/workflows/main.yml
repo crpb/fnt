@@ -29,6 +29,11 @@ jobs:
          if git commit -m $(date -Im); then
            git push
          fi
+    - name: upload files
+      id: deployweb
+      uses: actions/upload-pages-artifact@v3
+      with:
+        path: ./
     - name: Always Save Primes
       id: cache-primes-save
       if: always() && steps.cache-primes-restore.outputs.cache-hit != 'true'
@@ -37,3 +42,13 @@ jobs:
         key: ${{ steps.cache-primes-restore.outputs.cache-primary-key }}
         path: |
           fonts-main
+
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.output.page_url }}
+      needs: generate index
+      steps:
+        - name: deploy webdata
+          id: deployweb
+          uses: actions/deploy-pages@v4
