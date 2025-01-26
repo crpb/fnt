@@ -37,3 +37,16 @@ jobs:
         key: ${{ steps.cache-primes-restore.outputs.cache-primary-key }}
         path: |
           fonts-main
+  deploy:
+    needs: build
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy FNT Index
+        id: deployment
+        uses: actions/deploy-pages@v4
