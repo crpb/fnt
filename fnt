@@ -7,7 +7,7 @@ set -e
 # APT but only for fonts
 # alex@aiei.ch
 # christopher@bocki.com
-VERSION=1.8
+VERSION=1.8.1
 # Defaults
 BASE=${XDG_DATA_HOME:-"$HOME/.local/share"}
 TARGET="$BASE/fonts"
@@ -309,14 +309,14 @@ case "$1" in
 Syntax: fnt [ update | list [indexfile]| info | help ]
         fnt [ install | remove | preview | search ] font
 
-update|-u  updates the font package index of debian sid
-list|-l    lists installed fonts with glyphcount per font
-info       information about how many fonts can be installed and are available
 help|-h    this help
+info       information about how many fonts can be installed and are available
 install|-i install a font
-remove|-r  remove a font
+list|-l    lists installed fonts with glyphcount per font
 preview|-p preview a font
+remove|-r  remove a font
 search|-s  search for font
+update|-u  updates the font package index of debian sid
 EOF
 	;;
 
