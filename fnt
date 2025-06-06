@@ -8,7 +8,19 @@ set -e
 # alex@aiei.ch
 # christopher@bocki.com
 VERSION=1.9
+
+PACKAGES="$FNTDATA/Packages.xz"
+APACHE="$FNTDATA/APACHE.xz"
+OFL="$FNTDATA/OFL.xz"
+MIRROR="https://deb.debian.org/debian"
+INDEX="$MIRROR/dists/sid/main/binary-all/Packages.xz"
+GINDEX="https://alexmyczko.github.io/fnt"
+APACHEINDEX="$GINDEX/APACHE.xz"
+OFLINDEX="$GINDEX/OFL.xz"
+
 # Defaults
+USERCONFIG=fnt.conf
+SYSCONFIG=/etc/fnt.conf
 BASE=${XDG_DATA_HOME:-"$HOME/.local/share"}
 TARGET="$BASE/fonts"
 FNTDATA="$BASE/fnt"
@@ -20,25 +32,32 @@ if ! test -d "$BASE"; then
 	FNTDATA="$BASE/.fnt"
 fi
 FNTINDEXDIR="$FNTDATA/index"
-PACKAGES="$FNTDATA/Packages.xz"
-APACHE="$FNTDATA/APACHE.xz"
-OFL="$FNTDATA/OFL.xz"
-MIRROR="https://deb.debian.org/debian"
-INDEX="$MIRROR/dists/sid/main/binary-all/Packages.xz"
-GINDEX="https://alexmyczko.github.io/fnt"
-APACHEINDEX="$GINDEX/APACHE.xz"
-OFLINDEX="$GINDEX/OFL.xz"
-if [ ! -d "$FNTDATA" ] || [ ! -d "$FNTINDEXDIR" ]; then
-	mkdir -p "$FNTINDEXDIR" || { echo "Couldn't create cache+index directory: $FNTDATA + /index" ; exit 1 ; }
-fi
-
-if ! command -v uname &>/dev/null; then
-	s="Windows"
-else
-	s=$(uname -s)
+if [ ! -d "$FNTINDEXDIR" ]; then
+	mkdir -p "$FNTINDEXDIR" || {
+		echo "Couldn't create cache+index directory: $FNTDATA + /index"
+		exit 1
+	}
 fi
 
 check_com() { if ! command -v "$1" &> /dev/null; then return 1; fi ; }
+
+# We want a user extendable source system. Question is how /ö\..
+# In any case we need a configuration file with some kind of schema that isn't
+# to complcated and easily parseable through variable expansions.
+# FNT_SOURCES_BASE_DEBIAN='https://deb.debian.org/debian'
+# FNT_SOURCES_PATH_DEBIAN='/dists/sid/main/binary-all/Packages.xz'
+# FNT_SOURCES_BASE_GOOGLE_APACHE='https://alexmyczko.github.io/fnt'
+# FNT_SOURCES-PATH_GOOGLE_APACHE='/APACHE.xz'
+# FNT_SOURCES_BASE_GOOGLE_OFL='https://alexmyczko.github.io/fnt'
+# FNT_SOURCES-PATH_GOOGLE_OFL='/OFL.xzx
+sources() {
+	local -a SOURCES
+	[ -f $USERCONFIG ] && . $USERCONFIG
+	[ -f $SYSCONFIG ] && . $SYSCONFIG
+	for var in $(compgen -v FNT_SOURCES_) ; do
+		printf "%s=%s\n" "$var" "${!var@Q}";
+	done
+}
 
 # Pipelines
 pipe_download(){
@@ -239,6 +258,12 @@ preview() {
 		return 69
 	fi
 }
+
+if ! command -v uname &>/dev/null; then
+	s="Windows"
+else
+	s=$(uname -s)
+fi
 
 case "$s" in
 	Darwin)
